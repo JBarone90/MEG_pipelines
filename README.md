@@ -13,13 +13,13 @@ Welcome to the MEG Analysis Project repository! This is a comprehensive collecti
 
 ## Usage Instructions
 
-1. **Clone the Repository**: Use `git clone` to download the codebase to your local machine.
-2. **Set MATLAB Path**: Add the repository's root directory to your MATLAB path.
-3. **Run Scripts**: Execute the necessary scripts located in the `/main` folder to perform MEG data analysis.
+1. Clone the repository.
+2. Add the repository to your MATLAB path.
+3. Run the scripts in the `/matlab/main` folder.
 
 ## Dependencies
 
-- FieldTrip Toolbox (Tested with version 20190219; compatibility with newer versions is not guaranteed)
+- FieldTrip Toolbox (version 20190219; not tested with newer ones)
 - MATLAB
 
 ## Upcoming Features

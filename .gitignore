@@ -1,0 +1,79 @@
+# Ignore MATLAB temporary files
+*.asv
+*.autosave
+
+# Ignore Simulink generated files
+slprj/
+slcache/
+
+# Ignore MATLAB project files
+*.prj
+
+# Ignore Simulink settings
+*.slxc
+*.slxp
+
+# Ignore code generation
+codegen/
+
+# Ignore settings files
+*.mldatx
+
+# Ignore output and logging files
+*.out
+*.log
+
+# Ignore build files
+*.o
+*.mex
+*.mexa64
+*.mexmaci64
+*.mexw32
+*.mexw64
+
+# Ignore additional configuration and cache files
+*.sldd
+*.slx
+*.sls
+*.ini
+
+# Exclude user specific settings
+.matlab/
+
+# Python-specific
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+build/
+dist/
+*.egg-info/
+.installed.cfg
+
+# Test and coverage
+htmlcov/
+.tox/
+.coverage
+
+# Development Environments
+.idea
+.vscode/
+.spyproject/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Database
+*.db
+*.rdb
+
+# OS specific
+.DS_Store
+
+# vim
+*.swp
+*.swo
+
+# Mypy cache
+.mypy_cache/
