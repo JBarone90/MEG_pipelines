@@ -1,0 +1,10 @@
+{
+  "low_pass_freq": 150,
+  "high_pass_freq": 0.5,
+  "line_noise_freq": [50, 100, 150],
+  "resample_rate": 300, 
+  "event_type": "UPPT001",
+  "event_value": 10,
+  "pre_event_time": 2.25,
+  "post_event_time": 2.5
+}

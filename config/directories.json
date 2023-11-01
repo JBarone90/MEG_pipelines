@@ -1,0 +1,6 @@
+{
+  "fieldtrip_dir": "/cubric/software/MEG/fieldtrip-20190219",
+  "participant_dir": "/home/c1663876/Desktop/adaptation_inhibition",
+  "meg_dir": "/cubric/collab/400_motor/joystick_original_data",
+  "output_dir": "/cubric/data/c1663876/joystick_output"
+}
