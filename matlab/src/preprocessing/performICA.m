@@ -41,6 +41,6 @@ function [comp] = performICA(subjMegDir, subjCleanDir, resampleRate, shouldSave)
 
     % Optionally save ICA components
     if shouldSave
-        save(fullfile(subjCleanDir, 'icaComp.mat'), 'comp');
+        save(fullfile(subjCleanDir, 'icaComponents.mat'), 'comp');
     end
 end
