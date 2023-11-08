@@ -23,7 +23,7 @@ setupFieldTrip(dirConfig.fieldtrip_dir);
 
 % Hard-Coded Variables
 subjectIndex = 21;  % Subject ID
-componentsToRemove = [1, 7, 18, 22, 32];  % Components to remove
+badComponentsIdx = [1, 7, 18, 22, 32];  % Components to remove
  
 % Retrieve Participant List and Select One
 [~, idList, expDateList, expIDList] = readParticipantList(fullfile(dirConfig.participant_dir,'subj_list.txt'));
@@ -39,33 +39,37 @@ subjMegFile = fullfile(subjMegDir, megFileName);
 % Define Output Directory
 saveDir = fullfile(dirConfig.output_dir,...
     selectedSubject, 'ai', 'dataPrepro');
+
+% Make sure Output Directory Exist
 ensurePathExists(saveDir, true) 
 
-% Check for Existing Output Files
-checkFileExistence(fullfile(saveDir, 'cleanedData.mat'));
-
 % Perform High/Low-Pass Filtering
-preprocessedData = highLowPassFilter(subjMegFile, preproConfig.low_pass_freq, preproConfig.high_pass_freq);
+preprocessedData = highLowPassFilter(subjMegFile,...
+    preproConfig.low_pass_freq, preproConfig.high_pass_freq);
 
 % Perform Line Noise Reduction
-preprocessedData = removeLineNoise(preprocessedData, preproConfig.line_noise_freq);
+preprocessedData = removeLineNoise(preprocessedData,...
+    preproConfig.line_noise_freq);
 
 % Epoching and Downsampling
-downsampledData = epochAndDownsample(preprocessedData, subjMegFile, preproConfig.event_type, ...
-    preproConfig.event_value, preproConfig.pre_event_time, preproConfig.post_event_time, preproConfig.resample_rate);
+downsampledData = epochAndDownsample(preprocessedData,...
+    subjMegFile, preproConfig.event_type, ...
+    preproConfig.event_value, preproConfig.pre_event_time,...
+    preproConfig.post_event_time, preproConfig.resample_rate);
 
 % ICA for Artifact Rejection
-if exist(fullfile(saveDir, 'icaComponents.mat'), 'file')
+fileExists =  findAndCheckFile(saveDir,'icaComponents.mat');
+if fileExists
     load(fullfile(saveDir, 'icaComponents.mat'));
 else
-    comp = performICA(subjMegFile, saveDir, preproConfig.resample_rate, true);
+    comp = runICA(subjMegFile, saveDir, preproConfig.resample_rate, true);
 end
 
 % Visual Inspection of ICA Components
 plotICAComponents(comp);
 
 % Remove Bad Components and Backproject to Data
-dataIcaRemoved = removeBadComponents(comp, downsampledData, componentsToRemove);
+dataIcaRemoved = removeBadComponents(comp, downsampledData, badComponentsIdx);
 
 % Inspect Data Before and After ICA
 inspectData(downsampledData, {'MLC*', 'MLF*'}, 'vertical');
@@ -75,7 +79,8 @@ inspectData(dataIcaRemoved, {'MLC*', 'MLF*'}, 'vertical');
 [artifactJump, artifactMuscle, artifactEog] = automaticRejectionWrapper(dataIcaRemoved);
 
 % Remove Bad Trials
-cleanedData = removeBadTrials(dataIcaRemoved, artifactJump, artifactMuscle, artifactEog);
+cleanedData = removeBadTrials(dataIcaRemoved,...
+    artifactJump, artifactMuscle, artifactEog);
 
 % Retrieve Indices of Bad Trials
 Ntrl = length(dataIcaRemoved.trial);
@@ -89,19 +94,19 @@ if length(badTrlIdx) ~= (length(dataIcaRemoved.trial) - length(cleanedData.trial
 end
 
 % Save the bad components indices
-filename = fullfile(saveDir, 'badComponentsIdx.mat');
-if ~checkFileExistence(filename)
-    save(filename, 'componentsToRemove');
+fileExists =  findAndCheckFile(saveDir, 'badComponentsIdx.mat');
+if ~fileExists
+    save(fullfile(saveDir, 'badComponentsIdx.mat'), 'badComponentsIdx');
 end
 
 % Save the cleaned data
-filename = fullfile(saveDir, 'cleanedData.mat');
-if ~checkFileExistence(filename)
-    save(filename, 'cleanedData', '-v7.3');
+fileExists =  findAndCheckFile(saveDir, 'cleanedData.mat');
+if ~fileExists
+    save(fullfile(saveDir, 'cleanedData.mat'), 'cleanedData', '-v7.3');
 end
 
 % Save the bad trial indices
-filename = fullfile(saveDir, 'badTrialIdx.mat');
-if ~checkFileExistence(filename)
-    save(filename, 'badTrlIdx');
+fileExists =  findAndCheckFile(saveDir, 'badTrialIdx.mat');
+if ~fileExists
+    save(fullfile(saveDir, 'badTrialIdx.mat'), 'badTrlIdx');
 end

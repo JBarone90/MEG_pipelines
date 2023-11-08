@@ -1,5 +1,5 @@
-function [comp] = performICA(subjMegDir, subjCleanDir, resampleRate, shouldSave)
-    % performICA - Conducts Independent Component Analysis (ICA) on MEG data.
+function [comp] = runICA(subjMegDir, subjCleanDir, resampleRate, shouldSave)
+    % runICA - Conducts Independent Component Analysis (ICA) on MEG data.
     % Syntax: [comp] = performICA(subjMegDir, subjCleanDir, shouldSave, resampleRate)
     %
     % Inputs:

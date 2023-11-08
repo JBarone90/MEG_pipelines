@@ -22,30 +22,46 @@ subjectIndex = 21;  % Subject ID
 
 % Retrieve Participant List and Select One
 [~, idList, expDateList, expIDList] = readParticipantList(fullfile(dirConfig.participant_dir,'subj_list.txt'));
-[selectedSubject, selectedDate] = selectSingleSubject(idList, expDateList, expIDList, subjectIndex);
+[selectedSubject, selectedDate] = selectSingleSubject(idList,...
+    expDateList, expIDList, subjectIndex);
 
-% Define MEG Data Directory
+% Define MEG and MRI Data Directory
 subjMegDir = fullfile(dirConfig.meg_dir, selectedDate);
 megFileName = sprintf(dirConfig.meg_file_pattern,...
     selectedSubject, selectedDate);
 subjMegFile = fullfile(subjMegDir, megFileName);
+subjMriDir = fullfile(dirConfig.mri_dir, selectedSubject);
 
 % Define Output Directory
 saveDir = fullfile(dirConfig.output_dir,...
     selectedSubject, 'forwardModel');
-ensurePathExist(saveDir, true) 
+
+% Make sure Output Directory Exist
+ensurePathExists(saveDir, true) 
+
+% Check for Existence of Participant MRI 
+[fileExists, filePath] =  findAndCheckFile(subjMriDir, 'T1w.nii');
+if fileExists
+    mriPath = filePath;
+else
+    mriPath = fullfile(dirConfig.fieldtrip_dir,...
+        'template','headmodel','standard_mri.mat');%uses a template MRI
+end
 
 % Check for Existence of Polhemus Heashape 
-polhemus = findFile(subjMegDir, '*.pos');
+[~, polhemus] =  findAndCheckFile(subjMegDir, '*.pos');
 
 % Forward Model
 cfg               = [];
 cfg.polhemus      = polhemus;
-cfg.mriPath       = fullfile(dirConfig.mri_dir, selectedSubject,'T1w.nii');%MRI file
+cfg.mriPath       = mriPath;%MRI file
 cfg.megPath       = subjMegFile;%gradiometers 
 cfg.plot          = 'yes';%visually inspect co-registration
-cfg.normMethod    = 'old';%select the normalisation method when warping the MR 
+cfg.normMethod    = 'old';%select the normalisation method when warping the MR (old; new)
 forwardModel      = generateForwardModel(cfg);
 
-% Save files
-save(fullfile(saveDir,'forwardModel.mat'),'forwardModel');
+% Save the forward model
+fileExists =  findAndCheckFile(saveDir, 'forwardModel.mat');
+if ~fileExists
+   save(fullfile(saveDir, 'forwardModel.mat'),'forwardModel'); 
+end
