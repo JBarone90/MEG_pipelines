@@ -86,7 +86,8 @@ cleanedData = removeBadTrials(dataIcaRemoved,...
 Ntrl = length(dataIcaRemoved.trial);
 Fs = cleanedData.fsample;
 trlLength = preproConfig.pre_event_time + preproConfig.post_event_time;
-badTrlIdx = get_trl_idx(Ntrl, Fs, trlLength, artifactJump, artifactMuscle, artifactEog);
+badTrlIdx = getTrialIndices(Ntrl, Fs, trlLength,...
+    artifactJump, artifactMuscle, artifactEog);
 
 % Validation: Ensure Correct Number of Bad Trials Removed
 if length(badTrlIdx) ~= (length(dataIcaRemoved.trial) - length(cleanedData.trial))
